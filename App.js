@@ -6,53 +6,48 @@
 
 import React, { Component } from 'react';
 import {
-  Platform,
-  StyleSheet,
-  Text,
   View
 } from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+import PropTypes from 'prop-types'
+
+import {
+    Loop,
+    Stage,
+    Sprite
+} from 'react-game-kit/native'
 
 type Props = {};
 export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
-  }
-}
+    static contextTypes = {
+        loop: PropTypes.object,
+    };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+    loop = () => {
+        //Do stuff here
+    };
+
+    componentDidMount() {
+        // this.loopID = this.context.loop.subscribe(this.loop);
+    }
+
+    componentWillUnmount() {
+        // this.context.loop.unsubscribe(this.loopID);
+    }
+
+    render() {
+        return (
+            <Loop>
+                <Stage width={1024} height={576}>
+                    <Sprite
+                        repeat={true}
+                        src={require('./assets/character-sprite.png')}
+                        scale={0.5 * 2}
+                        state={0}
+                        steps={[9, 9, 0, 4, 5]}
+                    />
+                </Stage>
+            </Loop>
+        );
+    }
+}
