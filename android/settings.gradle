@@ -1,0 +1,3 @@
+rootProject.name = 'ReactGameKitLearning'
+
+include ':app'
