@@ -140,7 +140,7 @@ export default class Game extends Component {
                     >
                         <Body
                             shape="circle"
-                            args={[0, dimensions.height - 75, 75]}
+                            args={[dimensions.width/2-75/2, dimensions.height/2 - 75/2, 75]}//[初始x坐标，初始y坐标，半径] 因为是圆，所以是3个参数
                             density={0.003}
                             friction={1}
                             frictionStatic={0}
