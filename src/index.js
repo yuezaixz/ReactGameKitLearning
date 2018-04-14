@@ -1,77 +1,101 @@
-import React, { Component } from 'react';
-import { Image, Dimensions, PanResponder, View } from 'react-native';
-import {
-    Body,
-    Loop,
-    Stage,
-    World,
-} from 'react-game-kit/native';
+import React, { Component } from "react";
+import { Image, Dimensions, PanResponder, View } from "react-native";
+import { Body, Loop, Stage, World } from "react-game-kit/native";
 
-import Matter from 'matter-js';
+import Matter from "matter-js";
 
 export default class Game extends Component {
-
     handleUpdate = () => {
         this.setState({
             ballPosition: this.body.body.position,
-            ballAngle: this.body.body.angle,
+            ballAngle: this.body.body.angle
         });
-    }
+    };
 
-    physicsInit = (engine) => {
+    physicsInit = engine => {
+        var Body = Matter.Body;
 
-        const dimensions = Dimensions.get('window');
+        const dimensions = Dimensions.get("window");
+
+        // const test = Matter.Composites.softBody(200, 200, 20, 12, 5, 5, false, 8, {
+        //     friction: 0.00001, // 摩擦力
+        //     collisionFilter: {
+        //         group: Body.nextGroup(true)
+        //     },
+        //     render: {
+        //         visible: true,
+        //     }
+        // })
 
         const ground = Matter.Bodies.rectangle(
-            dimensions.width / 2, dimensions.height + 5-75/2,
-            dimensions.width, 5,
+            dimensions.width / 2,
+            dimensions.height + 5 - 75 / 2,
+            dimensions.width,
+            5,
             {
                 isStatic: true,
-            },
+                restitution: 1
+            }
         );
 
         const ceiling = Matter.Bodies.rectangle(
-            dimensions.width / 2, -75/2,
-            dimensions.width, 1,
+            dimensions.width / 2,
+            -75 / 2,
+            dimensions.width,
+            1,
             {
-                isStatic: true,
-            },
+                isStatic: true
+            }
         );
 
         const leftWall = Matter.Bodies.rectangle(
-            -75/2, dimensions.height / 2,
-            1, dimensions.height,
+            -75 / 2,
+            dimensions.height / 2,
+            1,
+            dimensions.height,
             {
-                isStatic: true,
-            },
+                isStatic: true
+            }
         );
 
         const rightWall = Matter.Bodies.rectangle(
-            dimensions.width-75/2, dimensions.height / 2,
-            1, dimensions.height - 5,
+            dimensions.width - 75 / 2,
+            dimensions.height / 2,
+            1,
+            dimensions.height - 5,
             {
-                isStatic: true,
-            },
+                isStatic: true
+            }
         );
 
         const frontBacket = Matter.Bodies.rectangle(
-            dimensions.width-195, 195,
-            5, 5,
+            dimensions.width - 195,
+            195,
+            5,
+            5,
             {
-                isStatic: true,
-            },
+                isStatic: true
+            }
         );
 
         const backBacket = Matter.Bodies.rectangle(
-            dimensions.width-50, 195,
-            50, 5,
+            dimensions.width - 50,
+            195,
+            50,
+            5,
             {
-                isStatic: true,
-            },
+                isStatic: true
+            }
         );
-
-        Matter.World.add(engine.world, [ground, leftWall, rightWall, ceiling, frontBacket, backBacket]);
-    }
+        Matter.World.add(engine.world, [
+            ground,
+            leftWall,
+            rightWall,
+            ceiling,
+            frontBacket,
+            backBacket
+        ]);
+    };
 
     constructor(props) {
         super(props);
@@ -80,13 +104,13 @@ export default class Game extends Component {
             gravity: 1,
             ballPosition: {
                 x: 0,
-                y: 0,
+                y: 0
             },
-            ballAngle: 0,
+            ballAngle: 0
         };
     }
 
-    clickTime = 0
+    clickTime = 0;
 
     componentWillMount() {
         this._panResponder = PanResponder.create({
@@ -100,7 +124,7 @@ export default class Game extends Component {
                 // });
                 //
                 Matter.Body.setAngularVelocity(this.body.body, -0.1);
-                Matter.Body.setVelocity(this.body.body, {x: 3, y: -20});
+                Matter.Body.setVelocity(this.body.body, { x: 3, y: -20 });
                 //
                 // this.startPosition = {
                 //     x: this.body.body.position.x,
@@ -120,7 +144,7 @@ export default class Game extends Component {
                 //     x: gestureState.vx,
                 //     y: gestureState.vy,
                 // });
-            },
+            }
         });
 
         // this._panResponder = PanResponder.create({
@@ -167,23 +191,23 @@ export default class Game extends Component {
         return {
             height: 75,
             width: 75,
-            position: 'absolute',
+            position: "absolute",
             transform: [
                 { translateX: this.state.ballPosition.x },
                 { translateY: this.state.ballPosition.y },
-                { rotate: (this.state.ballAngle * (180 / Math.PI)) + 'deg'}
-            ],
+                { rotate: this.state.ballAngle * (180 / Math.PI) + "deg" }
+            ]
         };
     }
 
     render() {
-        const dimensions = Dimensions.get('window');
+        const dimensions = Dimensions.get("window");
         return (
             <Loop>
                 <Stage
                     width={dimensions.width}
                     height={dimensions.height}
-                    style={{ backgroundColor: '#3a9bdc' }}
+                    style={{ backgroundColor: "#3a9bdc" }}
                 >
                     <World
                         onInit={this.physicsInit}
@@ -192,39 +216,45 @@ export default class Game extends Component {
                     >
                         <Body
                             shape="circle"
-                            args={[dimensions.width/2-75/2, dimensions.height/2 - 75/2, 75/2]}//[初始x坐标，初始y坐标，半径] 因为是圆，所以是3个参数
+                            args={[
+                                dimensions.width / 2 - 75 / 2,
+                                dimensions.height / 2 - 75 / 2,
+                                75 / 2
+                            ]} //[初始x坐标，初始y坐标，半径] 因为是圆，所以是3个参数
                             density={0.003}
                             friction={1}
                             frictionStatic={0}
                             restitution={0.5}
-                            ref={(b) => { this.body = b; }}
+                            ref={b => {
+                                this.body = b;
+                            }}
                         >
                             <View
-                                style={this.getBallStyles()} {...this._panResponder.panHandlers}
+                                style={this.getBallStyles()}
+                                {...this._panResponder.panHandlers}
                             >
                                 <Image
-                                    source={require('./assets/basketball.png')}
+                                    source={require("./assets/basketball.png")}
                                     height={75}
-                                    width = {75}
+                                    width={75}
                                 />
                             </View>
                         </Body>
                         <View
                             style={{
-                                height:160,
-                                width:160,
-                                position:'absolute',
-                                right:0,
-                                top:200
+                                height: 160,
+                                width: 160,
+                                position: "absolute",
+                                right: 0,
+                                top: 200
                             }}
                         >
                             <Image
-                                source={require('./assets/backet_100.png')}
+                                source={require("./assets/backet_100.png")}
                                 height={160}
-                                width = {160}
+                                width={160}
                             />
                         </View>
-
                     </World>
                 </Stage>
             </Loop>
